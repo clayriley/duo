@@ -148,7 +148,7 @@ def insert_context_features(instances, context):
                 for feature in instances[i-j][2].keys():
                     instances[i][2]["-"+str(j)+feature] = instances[i-j][2][feature]
             if i+j <= len(instances):
-                for feature in instances[i-j][2].keys():
+                for feature in instances[i+j][2].keys():
                     instances[i][2]["+"+str(j)+feature] = instances[i+j][2][feature]
     return instances
 
