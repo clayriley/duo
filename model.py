@@ -90,6 +90,7 @@ def main():
 
     test_instances = []
     exercise = None
+    instance_buffer = []
     for instance_data in test_data:
         current_exercise = instance_data.exercise_id
         name = instance_data.instance_id
