@@ -126,7 +126,7 @@ def main():
             f.write(instance_id + ' ' + str(prediction) + '\n')
 
 def insert_context_features(instances, context):
-    for i in range(instances):
+    for i in range(len(instances)):
         for j in range(1, context+1):
             if i-j >= 0 and i+j <= len(instances):
                 for feature in instances[i-j][2]:
@@ -280,6 +280,30 @@ class InstanceData(object):
         for morphological_feature in self.morphological_features:
             to_return['morphological_feature:' + morphological_feature] = 1.0
         to_return['dependency_label:' + self.dependency_label] = 1.0
+
+        """ NOT USING (YET?):
+        # Parameters specific to this instance
+        self.dependency_edge_head = instance_properties['dependency_edge_head']
+
+        # Derived parameters specific to this instance
+        self.exercise_index = int(self.instance_id[8:10])
+        self.token_index = int(self.instance_id[10:12])
+
+        # Derived parameters specific to this exercise
+        self.exercise_id = self.instance_id[:10]
+
+        # Parameters shared across the whole session
+        self.user = instance_properties['user']
+        self.countries = instance_properties['countries']
+        self.days = instance_properties['days']
+        self.client = instance_properties['client']
+        self.session = instance_properties['session']
+        self.format = instance_properties['format']
+        self.time = instance_properties['time']
+
+        # Derived parameters shared across the whole session
+        self.session_id = self.instance_id[:8]
+        """
 
         return to_return
 
