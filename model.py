@@ -26,6 +26,10 @@ from random import shuffle, uniform
 #from future.builtins import range
 from six import iteritems
 
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.pipeline import Pipeline
+
 # Sigma is the L2 prior variance, regularizing the baseline model. Smaller sigma means more regularization.
 _DEFAULT_SIGMA = 20.0
 
@@ -112,25 +116,40 @@ def main():
                                                  name=instance[0]
                                                  ) for instance in test_instances]
 
-    logistic_regression_model = LogisticRegression()
-    logistic_regression_model.train(training_instances, iterations=10)
+    #logistic_regression_model = LogisticRegression()
+    #logistic_regression_model.train(training_instances, iterations=10)
+    #predictions = logistic_regression_model.predict_test_set(test_instances)
 
-    predictions = logistic_regression_model.predict_test_set(test_instances)
+    # scikit-learn formats
+    y = []
+    for i in range(len(training_instances)):
+        y.append(training_instances[i].label)
+        training_instances[i] = training_instances[i].features
+    model = AdaBoostClassifier()
+    vectorizer = DictVectorizer()
+    pipe = Pipeline([('vectorizer', vectorizer), ('model', model)])
+    pipe.fit(training_instances, y)
+    predictions = pipe.predict([instance.features for instance in test_instances])
+    predictions = list(zip([instance.name for instance in test_instances], predictions))
 
     ####################################################################################
     # This ends the baseline model code; now we just write predictions.                #
     ####################################################################################
 
     with open(args.pred, 'wt') as f:
-        for instance_id, prediction in iteritems(predictions):
+        #for instance_id, prediction in iteritems(predictions):
+        for instance_id, prediction in predictions:
             f.write(instance_id + ' ' + str(prediction) + '\n')
 
 def insert_context_features(instances, context):
     for i in range(len(instances)):
         for j in range(1, context+1):
-            if i-j >= 0 and i+j <= len(instances):
-                for feature in instances[i-j][2]:
+            if i-j >= 0:
+                for feature in instances[i-j][2].keys():
                     instances[i][2]["-"+str(j)+feature] = instances[i-j][2][feature]
+            if i+j <= len(instances):
+                for feature in instances[i-j][2].keys():
+                    instances[i][2]["+"+str(j)+feature] = instances[i+j][2][feature]
     return instances
 
 
