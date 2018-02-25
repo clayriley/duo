@@ -293,9 +293,7 @@ class InstanceData(object):
         self.exercise_id = self.instance_id[:10]
 
         # Parameters shared across the whole session
-        self.user = instance_properties['user']
         self.countries = instance_properties['countries']
-        self.days = instance_properties['days']
         self.client = instance_properties['client']
         self.session = instance_properties['session']
         self.format = instance_properties['format']
@@ -304,6 +302,7 @@ class InstanceData(object):
         # Derived parameters shared across the whole session
         self.session_id = self.instance_id[:8]
         """
+        to_return['weeks'] = self.days / float(7)
 
         return to_return
 
