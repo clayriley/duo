@@ -75,7 +75,7 @@ def main():
         label = training_labels[name]
         features = instance_data.to_features()
         if current_exercise == exercise:  # push to buffer
-            instance_buffer = [(name, label, features)]
+            instance_buffer.append((name, label, features))
         else:  # get exercise-level contextual features and dump buffer
             instance_buffer = insert_context_features(instance_buffer, CONTEXT)
             training_instances.extend(instance_buffer)
@@ -84,9 +84,9 @@ def main():
     # don't forget final buffer
     instance_buffer = insert_context_features(instance_buffer, CONTEXT)
     training_instances.extend(instance_buffer)
-    training_instances = [LogisticRegressionInstance(features=instance_data[2],
-                                                     label=instance_data[1],
-                                                     name=instance_data[0]
+    training_instances = [LogisticRegressionInstance(features=instance[2],
+                                                     label=instance[1],
+                                                     name=instance[0]
                                                      ) for instance in training_instances]
 
     test_instances = []
@@ -98,7 +98,7 @@ def main():
         label = None
         features = instance_data.to_features()
         if current_exercise == exercise:  # push to buffer
-            instance_buffer = [(name, label, features)]
+            instance_buffer.append((name, label, features))
         else:  # get exercise-level contextual features and dump buffer
             instance_buffer = insert_context_features(instance_buffer, CONTEXT)
             test_instances.extend(instance_buffer)
@@ -107,9 +107,9 @@ def main():
     # don't forget final buffer
     instance_buffer = insert_context_features(instance_buffer, CONTEXT)
     test_instances.extend(instance_buffer)
-    test_instances = [LogisticRegressionInstance(features=instance_data[2],
-                                                 label=instance_data[1],
-                                                 name=instance_data[0]
+    test_instances = [LogisticRegressionInstance(features=instance[2],
+                                                 label=instance[1],
+                                                 name=instance[0]
                                                  ) for instance in test_instances]
 
     logistic_regression_model = LogisticRegression()
