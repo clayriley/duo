@@ -323,6 +323,16 @@ class InstanceData(object):
         """
         to_return['weeks'] = self.days / float(7)
 
+        # spelling issues!
+        for i in range(len(self.token) - 1):
+            bigram = self.token[i:i+2].lower()
+            if 'chars:'+bigram in to_return:
+                to_return['chars:'+bigram] += 1.0
+            else:
+                to_return['chars:'+bigram] = 1.0
+        to_return['chars:<W>'+self.token[0].lower()] = 1.0
+        to_return['chars:'+self.token[-1].lower()+'<W>'] = 1.0
+
         return to_return
 
 
